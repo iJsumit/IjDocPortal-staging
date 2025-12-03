@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>iJaipuria - DocPortal</title>
+    <script src="assets/js/supabase.min.js"></script>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Google Fonts: Poppins (Headings) & Inter (Body) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        /* minimal styles for the premium loader so it fits your theme */
+        #premiumLoader {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(3px);
+        }
+
+        #premiumLoader .loader-box {
+            text-align: center;
+            padding: 22px 28px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(18, 46, 93, 0.12);
+            background: linear-gradient(180deg, #ffffff, #f7f9ff);
+        }
+
+        #premiumLoader .spinner {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 5px solid rgba(18, 46, 93, 0.12);
+            border-top-color: #122E5D;
+            /* navy */
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px auto;
+        }
+
+        #premiumLoader .loader-title {
+            font-weight: 600;
+            color: #122E5D;
+            margin-bottom: 6px;
+        }
+
+        #premiumLoader .loader-sub {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar container">
+        <div class="brand-logo">
+            <div class="brand-icon">
+                <i class="fa-solid fa-file-signature"></i>
+            </div>DocPortal
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <!-- Left Side: Text & Graphic -->
+                <div class="col-lg-6 order-2 order-lg-1 text-center text-lg-start">
+
+                    <div data-aos="fade-right" data-aos-duration="1000">
+                        <h1 class="hero-title">
+                            Generate <span class="text-primary-dark">Professional</span> <br>
+                            Documents Instantly
+                        </h1>
+                        <p class="hero-subtext">
+                            Streamline your workflow. Create invoices, legal letters, certificates, and PDF reports by
+                            simply filling out dynamic forms.
+                        </p>
+                    </div>
+
+                    <!-- CSS Illustration: Floating Documents (Hidden on mobile) -->
+                    <div class="visual-wrapper" data-aos="fade-up" data-aos-delay="200">
+                        <!-- Background Doc -->
+                        <div class="doc-card doc-bg-1"></div>
+
+                        <!-- Main Doc -->
+                        <div class="doc-card doc-main">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="skeleton-header"></div>
+                                <div style="margin-left: auto; color: var(--accent);"><i
+                                        class="fa-solid fa-file-pdf fa-lg"></i></div>
+                            </div>
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                            <div style="margin-top: auto; border-top: 1px solid #eee; padding-top: 10px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted" style="font-size: 0.7rem;">Status: Generated</small>
+                                    <i class="fa-solid fa-check-circle text-primary-dark"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Icon Badge -->
+                        <div class="doc-card doc-bg-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Side: Login Card -->
+                <div class="col-lg-5 offset-lg-1 order-1 order-lg-2 login-col mb-4 mb-lg-0">
+                    <div class="login-card-wrapper" data-aos="fade-left" data-aos-duration="1000">
+                        <div class="text-center mb-4">
+                            <h3 class="fw-bold text-primary-dark">Welcome Back</h3>
+                            <p class="text-muted small">Enter your credentials to access your workspace.</p>
+                        </div>
+
+                        <form>
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="email" placeholder="name@jaipuria.ac.in">
+                                <label for="email">Email Address</label>
+                            </div>
+                            <div class="form-floating mb-4">
+                                <input type="password" class="form-control" id="password" placeholder="Password">
+                                <label for="password">Password</label>
+                            </div>
+                            <div class="error" id="error" style="color: red;"></div>
+
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="rememberCheck">
+                                    <label class="form-check-label text-muted small" for="rememberCheck">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a href="#" class="forgot-link">Forgot password?</a>
+                            </div>
+
+                            <div class="d-grid">
+                                <button onclick="login()" class="btn btn-login btn-lg" type="button">
+                                    Login to Dashboard
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-center mt-4">
+                            <span class="text-muted small">Protected by 256-bit Encryption</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Simple Footer -->
+    <footer class="text-center py-4 text-muted small">
+        &copy; 2025 iJaipuria All rights reserved.
+    </footer>
+
+    <!-- PREMIUM GLOBAL LOADER (keeps design untouched) -->
+    <div id="premiumLoader" aria-hidden="true">
+        <div class="loader-box">
+            <div class="spinner" role="status" aria-hidden="true"></div>
+            <div class="loader-title">Preparing your experience</div>
+            <div class="loader-sub">Please wait — checking your session...</div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- AOS Animation JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Your main script (kept as you requested) -->
+    <script src="assets/js/script.js" defer></script>
+
+    <!-- Auth-check and UI guard (added; do not change your HTML structure) -->
+    <script>
+        // show/hide loader helpers (these are safe additions)
+        function showLoader() {
+            const el = document.getElementById('premiumLoader');
+            if (el) el.style.display = 'flex';
+        }
+        function hideLoader() {
+            const el = document.getElementById('premiumLoader');
+            if (el) el.style.display = 'none';
+        }
+
+        // Protect against redirect loops by using a sessionStorage timestamp
+        const REDIRECT_THROTTLE_MS = 2000; // 2 seconds
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            showLoader();
+            try {
+                // client is created in your script.js - it's the same name you used elsewhere
+                const status = await client.auth.getUser();
+
+                const user = status?.data?.user ?? null;
+
+                if (user) {
+                    // Only redirect if we haven't just redirected in last REDIRECT_THROTTLE_MS
+                    const last = parseInt(sessionStorage.getItem('redirectedToDashboard') || '0', 10);
+                    const now = Date.now();
+                    if (!last || (now - last) > REDIRECT_THROTTLE_MS) {
+                        sessionStorage.setItem('redirectedToDashboard', String(now));
+                        // redirect to dashboard (keeps your flow identical)
+                        window.location.href = "dashboard.html";
+                        return;
+                    } else {
+                        // If throttled, don't redirect (prevents loop) and show UI as fallback
+                    }
+                }
+
+                // Not logged in → reveal things (AOS animations may have hidden them)
+                document.querySelectorAll("[data-aos]").forEach(el => {
+                    el.style.opacity = "1";
+                    el.style.transform = "none";
+                });
+
+                // Ensure login card and column are visible
+                const loginCol = document.querySelector(".login-col");
+                const loginCard = document.querySelector(".login-card-wrapper");
+                if (loginCol) { loginCol.style.opacity = "1"; loginCol.style.display = ""; }
+                if (loginCard) { loginCard.style.opacity = "1"; loginCard.style.display = ""; }
+
+            } catch (err) {
+                // If Supabase fails, still show the UI (no blank screen)
+                console.error("Auth check failed on index:", err);
+                document.querySelectorAll("[data-aos]").forEach(el => {
+                    el.style.opacity = "1";
+                    el.style.transform = "none";
+                });
+                const loginCol = document.querySelector(".login-col");
+                const loginCard = document.querySelector(".login-card-wrapper");
+                if (loginCol) { loginCol.style.opacity = "1"; loginCol.style.display = ""; }
+                if (loginCard) { loginCard.style.opacity = "1"; loginCard.style.display = ""; }
+            } finally {
+                // small delay to avoid flicker when redirecting very fast
+                setTimeout(hideLoader, 220);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

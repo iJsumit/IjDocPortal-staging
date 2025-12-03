@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>iJaipuria Admission Letter Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tinos&display=swap" rel="stylesheet">
+
+  <head>
+    <!-- Preload Roboto regular (weight 400) font -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxM.woff2" as="font"
+      type="font/woff2" crossorigin="anonymous" />
+    <!-- Preload Roboto bold (weight 700) font -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc-.woff2" as="font"
+      type="font/woff2" crossorigin="anonymous" />
+
+    <!-- Import Roboto font CSS for fallback and style -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" />
+
+    <style>
+      body {
+        font-family: 'Roboto', Arial, sans-serif;
+        /* Optional: smooth font rendering */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+  </head>
+
+  <link rel="stylesheet" href="assets/css/admission-letter.css">
+  <link rel="stylesheet" href="assets/css/pdf.css">
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header-bar">
+      <h1>iJaipuria Admission Letter</h1>
+    </header>
+
+    <section class="form-section">
+      <form id="pdfForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Learner Name</label>
+            <input type="text" id="name" required>
+          </div>
+          <div class="form-group">
+            <label for="bAmount">Registration Amount (₹)</label>
+            <input type="number" id="bAmount" required>
+          </div>
+          <div class="form-group">
+            <label for="scholarship">Scholarship (₹)</label>
+            <input type="number" id="scholarship" value="10000" required>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button type="button" id="previewBtn">Generate &amp; Preview PDF</button>
+          <!-- <button type="button" id="dynamicBtn">Dynamic Page Only</button> -->
+        </div>
+      </form>
+    </section>
+
+    <section id="pdfPreviewContainer" class="preview-section">
+      <h2>Preview</h2>
+      <iframe id="pdfPreview"></iframe>
+      <button id="downloadMergedPdf">Download PDF</button>
+    </section>
+  </div>
+  <script src="assets/js/supabase.min.js"></script>
+
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

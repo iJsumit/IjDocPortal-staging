@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuDash - Premium Dashboard</title>
+    <script src="assets/js/supabase.min.js"></script>
+
+
+    <!-- 1. Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- 2. Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- 3. Google Fonts (Poppins for premium look) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+
+    <style>
+        /* small style for the global loader on dashboard */
+        #appLoader {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: none;
+            /* start hidden; script will show/hide */
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+        }
+
+        #appLoader .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.35rem;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Fullscreen Loader -->
+    <div id="appLoader" role="status" aria-hidden="true">
+        <div class="spinner-border text-primary-dark" style="width: 3rem; height: 3rem;" role="status"></div>
+    </div>
+
+    <!-- ==================================== 
+         1. SIDEBAR (Desktop Fixed / Mobile Offcanvas) 
+    ==================================== -->
+
+    <!-- Sidebar Structure -->
+    <div class="offcanvas-lg offcanvas-start sidebar-wrapper sidebar" tabindex="-1" id="sidebarMenu"
+        aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title text-white fw-bold" id="sidebarMenuLabel">DocPortal</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                data-bs-target="#sidebarMenu" aria-label="Close"></button>
+        </div>
+
+        <div class="offcanvas-body d-flex flex-column p-0 h-100">
+            <!-- Logo (Desktop) -->
+            <div class="sidebar-logo d-none d-lg-block">
+                <i class="bi bi-grid-1x2-fill me-2"></i> DocPortal
+            </div>
+
+            <!-- Menu Items -->
+            <ul class="nav flex-column px-3 pt-2">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-activity"></i> Activity Logs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-folder2-open"></i> Saved Files
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-person-circle"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-gear"></i> Settings
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Bottom Logout -->
+            <div class="mt-auto px-3 pb-4">
+                <a class="nav-link text-danger" href="javascript:void(0)" onclick="logout()">
+                    <i class="bi bi-box-arrow-left"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================================== 
+         2. MAIN CONTENT AREA 
+    ==================================== -->
+    <main class="main-content">
+
+        <!-- Top Navbar -->
+        <nav class="navbar navbar-expand-lg top-navbar sticky-top">
+            <div class="container-fluid">
+
+                <!-- Mobile Toggle Button -->
+                <button class="btn btn-outline-secondary d-lg-none mobile-toggler border-0" type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+                    <i class="bi bi-list fs-3"></i>
+                </button>
+
+                <!-- Left: Breadcrumb / Title -->
+                <div class="d-flex align-items-center ms-2 ms-lg-0">
+                    <h5 class="mb-0 text-dark fw-bold">Dashboard</h5>
+                </div>
+
+                <!-- Right: User Profile -->
+                <div class="ms-auto d-flex align-items-center gap-3">
+
+                    <!-- Notification Bell -->
+                    <div class="position-relative d-none d-sm-block cursor-pointer">
+                        <i class="bi bi-bell fs-5 text-secondary"></i>
+                        <span
+                            class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">New alerts</span>
+                        </span>
+                    </div>
+
+                    <!-- User Dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                            id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="text-end me-2 d-none d-sm-block">
+                                <div id="username" class="fw-bold text-dark" style="font-size: 0.9rem;"></div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Admin</div>
+                            </div>
+                            <div class="user-avatar">AD</div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <div class="container-fluid p-4">
+
+            <!-- Welcome Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-0 bg-primary text-white rounded-4 p-4"
+                        style="background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold mb-1" id="username"></h2>
+                                <p class="mb-0 opacity-75">Select a tool below to start generating your documents.</p>
+                            </div>
+                            <i class="bi bi-stars d-none d-md-block" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools Grid -->
+            <div class="row g-4">
+
+                <!-- Card 1: Admission Letter -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="tool-card">
+                        <div class="icon-wrapper">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <h5 class="card-title">Admission Letter</h5>
+                        <p class="card-text">Create professional university or school admission offer letters instantly.
+                        </p>
+                        <a href="admission-letter.html" class="btn btn-premium">Create Now</a>
+                    </div>
+                </div>
+
+                <!-- Card 2: Email Templates -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="tool-card">
+                        <div class="icon-wrapper">
+                            <i class="bi bi-envelope-paper-fill"></i>
+                        </div>
+                        <h5 class="card-title">Email Templates</h5>
+                        <p class="card-text">Generate corporate email drafts for HR, sales, or marketing needs.</p>
+                        <a href="#" class="btn btn-premium">Generate Email</a>
+                    </div>
+                </div>
+
+                <!-- Card 3: Invoice Generator -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="tool-card">
+                        <div class="icon-wrapper">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+                        <h5 class="card-title">Invoice Generator</h5>
+                        <p class="card-text">Create GST-compliant invoices with automated tax calculations.</p>
+                        <a href="#" class="btn btn-premium">Create Invoice</a>
+                    </div>
+                </div>
+
+                <!-- Card 4: Offer Letter -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="tool-card">
+                        <div class="icon-wrapper">
+                            <i class="bi bi-briefcase-fill"></i>
+                        </div>
+                        <h5 class="card-title">Offer Letter</h5>
+                        <p class="card-text">Draft job offer letters with salary structures and terms.</p>
+                        <a href="#" class="btn btn-premium">Draft Offer</a>
+                    </div>
+                </div>
+
+                <!-- Card 5: Appointment Letter -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="tool-card">
+                        <div class="icon-wrapper">
+                            <i class="bi bi-calendar-check-fill"></i>
+                        </div>
+                        <h5 class="card-title">Appointment Letter</h5>
+                        <p class="card-text">Official employment confirmation documents for new hires.</p>
+                        <a href="#" class="btn btn-premium">Generate Letter</a>
+                    </div>
+                </div>
+
+                <!-- Card 6: Certificate -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="tool-card">
+                        <div class="icon-wrapper">
+                            <i class="bi bi-award-fill"></i>
+                        </div>
+                        <h5 class="card-title">Certificate Maker</h5>
+                        <p class="card-text">Design certificates for courses, internships, or achievements.</p>
+                        <a href="#" class="btn btn-premium">Design Certificate</a>
+                    </div>
+                </div>
+
+                <!-- Card 7: Payment Receipt -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="tool-card">
+                        <div class="icon-wrapper">
+                            <i class="bi bi-credit-card-2-front-fill"></i>
+                        </div>
+                        <h5 class="card-title">Payment Receipt</h5>
+                        <p class="card-text">Acknowledge payments with digital receipts instantly.</p>
+                        <a href="#" class="btn btn-premium">Create Receipt</a>
+                    </div>
+                </div>
+
+                <!-- Card 8: Custom PDF -->
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="tool-card">
+                        <div class="icon-wrapper">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                        </div>
+                        <h5 class="card-title">Custom PDF</h5>
+                        <p class="card-text">Convert text or HTML to PDF with custom formatting options.</p>
+                        <a href="#" class="btn btn-premium">Generate PDF</a>
+                    </div>
+                </div>
+
+            </div> <!-- End Grid -->
+
+            <!-- Footer -->
+            <footer class="pt-4 pb-2 text-center">
+                <p class="text-muted small mb-0">&copy; 2025 iJaipuria Inc. All rights reserved.</p>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- 5. Bootstrap 5 JS Bundle (Includes Popper for Dropdowns & Offcanvas) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/script.js" defer></script>
+
+    <script>
+        // small helpers to control the dashboard loader (shows while auth check happens)
+        function showLoader() {
+            const el = document.getElementById('appLoader');
+            if (el) el.style.display = 'flex';
+        }
+        function hideLoader() {
+            const el = document.getElementById('appLoader');
+            if (el) el.style.display = 'none';
+        }
+
+        // Guard against redirect loops
+        const REDIRECT_THROTTLE_MS = 2000;
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            showLoader();
+            try {
+                const result = await client.auth.getUser();
+                const user = result?.data?.user ?? null;
+
+                if (!user) {
+                    // Not logged in — only redirect if not recently redirected
+                    const last = parseInt(sessionStorage.getItem('redirectedToIndex') || '0', 10);
+                    const now = Date.now();
+                    if (!last || (now - last) > REDIRECT_THROTTLE_MS) {
+                        sessionStorage.setItem('redirectedToIndex', String(now));
+                        window.location.href = "index.html";
+                        return;
+                    } else {
+                        // throttled — don't redirect; hide loader and allow UI fallback
+                        hideLoader();
+                        return;
+                    }
+                }
+
+                // Set username (keeps your variable name)
+                document.getElementById("username").textContent = user.email;
+            } catch (err) {
+                console.error("Dashboard auth error:", err);
+                // If supabase fails, allow the page to show but hide loader
+            } finally {
+                // small delay so loader isn't a flicker
+                setTimeout(hideLoader, 200);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
