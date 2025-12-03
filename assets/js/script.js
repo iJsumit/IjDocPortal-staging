@@ -261,7 +261,7 @@ function generateDynamicPageAsBytes() {
         container.innerHTML = `
       <div id="pdf-content" class="pdf-page">
     
-        <img src="assets/images/logo.png" alt="Logo" class="pdf-logo">
+        <img src="../assets/images/logo.png" alt="Logo" class="pdf-logo">
         <h1 class="pdf-title">ADMISSION LETTER</h1>
         <div class="address">
             <div>
@@ -389,3 +389,4 @@ async function mergePDFs(dynamicBytes, staticBytes) {
 //     duration: 800,
 //     easing: 'ease-out-cubic'
 // });
+
